@@ -106,3 +106,24 @@ Kiểm tra tất cả luồng đi qua cổng 80:
 - **Route /student (Mở rộng 9):** `http://localhost/student/` hoặc `http://localhost/student`
 - **API Backend:** `http://localhost/api/hello` và `http://localhost/api/students-db`
 - **Keycloak qua Gateway:** `http://localhost/auth/`
+---
+
+### 6. MinIO Object Storage (`object-storage-server`)
+1. **Truy cập MinIO Console:**
+   - URL: `http://localhost:9001` (User: `minioadmin` / Pass: `minioadmin`)
+
+2. **Tạo Bucket & Tải File:**
+   - Vào mục **Buckets** -> Tạo 2 bucket: `profile-pics` và `documents`.
+   - Mở bucket `profile-pics` và tải lên một hình ảnh bất kỳ (ví dụ: `images.png`).
+
+3. **Cấu hình Anonymous Public Download cho bucket `profile-pics`:**
+   - Do giao diện MinIO Console ẩn tính năng đổi quyền Public trực tiếp, thực hiện qua MinIO Client (`mc`) bên trong container:
+   ```bash
+   docker exec -it object-storage-server sh -c "mc alias set myminio http://localhost:9000 minioadmin minioadmin && mc anonymous set download myminio/profile-pics"
+   ```
+
+4. **Kiểm thử truy cập Public:**
+   - Mở trình duyệt và truy cập trực tiếp URL file đã upload:
+   ```
+   http://localhost:9000/profile-pics/images.png
+   ```
