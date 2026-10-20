@@ -15,7 +15,7 @@ services:
       - "1053:53/tcp"
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.53
+        ipv4_address: 172.28.0.53
 
   # 2. Node Exporter (Metrics Agent cho Prometheus)
   monitoring-node-exporter-server:
@@ -24,13 +24,9 @@ services:
     restart: unless-stopped
     ports:
       - "9100:9100"
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.61
+        ipv4_address: 172.28.0.61
 
   # 3. Prometheus Server
   monitoring-prometheus-server:
@@ -50,11 +46,11 @@ services:
       - monitoring-node-exporter-server
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.60
+        ipv4_address: 172.28.0.60
 
   # 4. Grafana Dashboard Server
   monitoring-grafana-dashboard-server:
-    image: grafana/grafana:11.2.0
+    image: grafana/grafana:12.3.0
     container_name: monitoring-grafana-dashboard-server
     restart: unless-stopped
     ports:
@@ -70,7 +66,7 @@ services:
       - monitoring-prometheus-server
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.62
+        ipv4_address: 172.28.0.62
 
   # 5. Keycloak Authentication & Identity Server
   authentication-identity-server:
@@ -90,7 +86,7 @@ services:
       - "8081:8080"
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.50
+        ipv4_address: 172.28.0.50
 
   # 6. API Gateway / Reverse Proxy & Load Balancer (Nginx)
   api-gateway-proxy-server:
@@ -108,7 +104,7 @@ services:
       - authentication-identity-server
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.10
+        ipv4_address: 172.28.0.10
 
   # ============================================================================
   # 👥 THÀNH VIÊN B: APPLICATION, DATA & STORAGE
@@ -125,7 +121,7 @@ services:
       - "8080:80"
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.11
+        ipv4_address: 172.28.0.11
 
   # 8. Web Frontend Server 2 (Load Balancer Round Robin Partner)
   web-frontend-server2:
@@ -138,7 +134,7 @@ services:
       - "8082:80"
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.12
+        ipv4_address: 172.28.0.12
 
   # 9. Application Backend Server (Flask REST API)
   application-backend-server:
@@ -159,7 +155,7 @@ services:
       - relational-database-server
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.20
+        ipv4_address: 172.28.0.20
 
   # 10. Relational Database Server (MariaDB)
   relational-database-server:
@@ -174,14 +170,14 @@ services:
     volumes:
       - ./relational-database-server/init:/docker-entrypoint-initdb.d:ro
     ports:
-      - "3306:3306"
+      - "3308:3306"
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.30
+        ipv4_address: 172.28.0.30
 
   # 11. Object Storage Server (MinIO)
   object-storage-server:
-    image: minio/minio:RELEASE.2024-05-10T01-41-38Z
+    image: cgr.dev/chainguard/minio:latest
     container_name: object-storage-server
     restart: unless-stopped
     command: server /data --console-address ":9001"
@@ -193,7 +189,7 @@ services:
       - "9001:9001"
     networks:
       cloud-net:
-        ipv4_address: 172.20.0.40
+        ipv4_address: 172.28.0.40
 
 networks:
   cloud-net:
@@ -202,5 +198,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1

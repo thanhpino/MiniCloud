@@ -10,7 +10,7 @@ PASSWORD=${4:-"password123"}
 echo "=== LẤY ACCESS TOKEN TỪ KEYCLOAK ==="
 echo "Realm: $REALM | User: $USERNAME"
 
-TOKEN_RESPONSE=$(curl -s -X POST "http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${REALM}/protocol/openid-connect/token" \
+TOKEN_RESPONSE=$(curl -s -X POST "http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/auth/realms/${REALM}/protocol/openid-connect/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=password" \
   -d "client_id=${CLIENT_ID}" \
