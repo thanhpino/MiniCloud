@@ -3,7 +3,7 @@ import json
 import pymysql
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import jwt
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -98,9 +98,10 @@ def secure_endpoint():
 
     token = auth_header.split(" ")[1]
     try:
-        # Decode token payload without signature verification for test inspection,
-        # or verify with Keycloak public certs in production.
-        payload = jwt.decode(token, options={"verify_signature": False})
+        # Decode JWT payload (standard Base64URL JSON format, no external dependency required)
+        payload_b64 = token.split(".")[1]
+        payload_b64 += "=" * ((4 - len(payload_b64) % 4) % 4)
+        payload = json.loads(base64.urlsafe_b64decode(payload_b64).decode("utf-8"))
         return jsonify({
             "status": "authenticated",
             "message": "Access granted to secure resource!",
