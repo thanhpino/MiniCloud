@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 3: Bảo mật API với Keycloak OIDC</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.7; }
+    h1 { color: #38bdf8; }
+    a { color: #38bdf8; text-decoration: none; }
+    .box { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #334155; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <p><a href="/blog/">← Quay lại danh sách Blog</a></p>
+  <h1>Bài 3: Bảo mật API với Keycloak OIDC</h1>
+  <p>Triển khai định danh tập trung (Identity and Access Management - IAM) thông qua Keycloak 24+:</p>
+  <div class="box">
+    <ul>
+      <li><strong>Realm:</strong> Khởi tạo realm riêng biệt phục vụ người dùng sinh viên.</li>
+      <li><strong>Client:</strong> Client <code>flask-app</code> hỗ trợ Direct Access Grants (Password Grant) để lấy JWT Bearer token trực tiếp.</li>
+      <li><strong>User:</strong> Đã cấu hình sẵn 2 tài khoản sinh viên <code>sv01</code> và <code>sv02</code> với mật khẩu chuẩn.</li>
+      <li><strong>Protected Endpoint:</strong> Route <code>/secure</code> kiểm tra tính hợp lệ của token trước khi phản hồi dữ liệu.</li>
+    </ul>
+  </div>
+</body>
+</html>

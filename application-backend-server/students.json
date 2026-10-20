@@ -1,0 +1,37 @@
+[
+  {
+    "id": "21110001",
+    "name": "Nguyễn Văn An",
+    "email": "an.nguyen@cloud.local",
+    "major": "Cloud Computing",
+    "role": "Thành viên A"
+  },
+  {
+    "id": "21110002",
+    "name": "Trần Thị Bình",
+    "email": "binh.tran@cloud.local",
+    "major": "Distributed Systems",
+    "role": "Thành viên B"
+  },
+  {
+    "id": "21110003",
+    "name": "Lê Hoàng Cường",
+    "email": "cuong.le@cloud.local",
+    "major": "DevOps Engineering",
+    "role": "Sinh viên"
+  },
+  {
+    "id": "21110004",
+    "name": "Phạm Minh Đức",
+    "email": "duc.pham@cloud.local",
+    "major": "Cyber Security",
+    "role": "Sinh viên"
+  },
+  {
+    "id": "21110005",
+    "name": "Vũ Thu Hà",
+    "email": "ha.vu@cloud.local",
+    "major": "Data Engineering",
+    "role": "Sinh viên"
+  }
+]

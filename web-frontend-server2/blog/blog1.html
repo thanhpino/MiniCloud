@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 1: Kiến trúc Hạ tầng 9 Server MiniCloud</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.7; }
+    h1 { color: #38bdf8; }
+    a { color: #38bdf8; text-decoration: none; }
+    .box { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #334155; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <p><a href="/blog/">← Quay lại danh sách Blog</a></p>
+  <h1>Bài 1: Kiến trúc Hạ tầng 9 Server MiniCloud</h1>
+  <p>Dự án MiniCloud được thiết kế mô phỏng kiến trúc Microservices & Cloud Infrastructure hoàn chỉnh gồm 9 máy chủ chuyên biệt:</p>
+  <div class="box">
+    <ul>
+      <li><strong>API Gateway (Nginx):</strong> Điểm truy cập duy nhất tại cổng 80, cân bằng tải Round Robin giữa Web 1 và Web 2.</li>
+      <li><strong>DNS Server (Bind9):</strong> Phân giải tên miền nội bộ <code>cloud.local</code> cho các container.</li>
+      <li><strong>Monitoring (Prometheus & Grafana):</strong> Thu thập số liệu hiệu năng qua Node Exporter.</li>
+      <li><strong>Security (Keycloak):</strong> Máy chủ xác thực người dùng OIDC/OAuth2.</li>
+      <li><strong>Data & Storage:</strong> MariaDB cho cơ sở dữ liệu quan hệ và MinIO cho Object Storage S3-compatible.</li>
+    </ul>
+  </div>
+</body>
+</html>

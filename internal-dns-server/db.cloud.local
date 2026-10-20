@@ -1,0 +1,44 @@
+;
+; BIND data file for internal domain cloud.local
+;
+$TTL    604800
+@       IN      SOA     ns.cloud.local. admin.cloud.local. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+; Name Server
+@                               IN      NS      ns.cloud.local.
+ns                              IN      A       172.20.0.53
+
+; -------------------------------------------------------------
+; Core Services (Cơ bản)
+; -------------------------------------------------------------
+web-frontend-server             IN      A       172.20.0.11
+web                             IN      A       172.20.0.11
+api-gateway-proxy-server        IN      A       172.20.0.10
+gateway                         IN      A       172.20.0.10
+
+; -------------------------------------------------------------
+; Extended Services (Mở rộng 6: app-backend, minio, keycloak)
+; -------------------------------------------------------------
+app-backend                     IN      A       172.20.0.20
+application-backend-server      IN      A       172.20.0.20
+minio                           IN      A       172.20.0.40
+object-storage-server           IN      A       172.20.0.40
+keycloak                        IN      A       172.20.0.50
+authentication-identity-server  IN      A       172.20.0.50
+
+; -------------------------------------------------------------
+; Additional Infrastructure & Load Balancer partner
+; -------------------------------------------------------------
+web-frontend-server2            IN      A       172.20.0.12
+web2                            IN      A       172.20.0.12
+database                        IN      A       172.20.0.30
+relational-database-server      IN      A       172.20.0.30
+prometheus                      IN      A       172.20.0.60
+monitoring-prometheus-server    IN      A       172.20.0.60
+grafana                         IN      A       172.20.0.62
+monitoring-grafana-server       IN      A       172.20.0.62

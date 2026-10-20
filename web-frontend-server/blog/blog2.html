@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 2: Cơ chế Giám sát với Prometheus & Grafana</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.7; }
+    h1 { color: #38bdf8; }
+    a { color: #38bdf8; text-decoration: none; }
+    .box { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #334155; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <p><a href="/blog/">← Quay lại danh sách Blog</a></p>
+  <h1>Bài 2: Cơ chế Giám sát với Prometheus & Grafana</h1>
+  <p>Hệ thống giám sát MiniCloud cung cấp khả năng quan sát (observability) thời gian thực toàn diện:</p>
+  <div class="box">
+    <ul>
+      <li><strong>Prometheus (Port 9090):</strong> Định kỳ mỗi 15s scrape dữ liệu từ Node Exporter (Port 9100) và Web Frontend (Port 80).</li>
+      <li><strong>Node Exporter:</strong> Thu thập thông số hạt nhân Linux của máy chủ (CPU idle, RAM available, Network transmit/receive).</li>
+      <li><strong>Grafana Dashboard (Port 3000):</strong> Tự động nạp dashboard <em>System Health</em> qua file provisioning, hiển thị biểu đồ CPU, RAM, Network I/O.</li>
+    </ul>
+  </div>
+</body>
+</html>

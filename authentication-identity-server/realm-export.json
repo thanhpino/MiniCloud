@@ -1,0 +1,112 @@
+{
+  "realm": "realm_21110001",
+  "displayName": "MiniCloud Student Realm (MSSV: 21110001)",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "student",
+        "description": "Student Role for MiniCloud"
+      },
+      {
+        "name": "admin",
+        "description": "Admin Role for MiniCloud"
+      }
+    ]
+  },
+  "groups": [],
+  "defaultRoles": [
+    "offline_access",
+    "uma_authorization",
+    "student"
+  ],
+  "clients": [
+    {
+      "id": "flask-app-client-id",
+      "clientId": "flask-app",
+      "name": "Flask Application Backend",
+      "description": "OIDC Client for Flask Backend and API Gateway",
+      "rootUrl": "",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": true,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "access.token.lifespan": "3600"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "user-sv01-id",
+      "username": "sv01",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Van A",
+      "lastName": "SinhVien",
+      "email": "sv01@cloud.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "student"
+      ]
+    },
+    {
+      "id": "user-sv02-id",
+      "username": "sv02",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Thi B",
+      "lastName": "SinhVien",
+      "email": "sv02@cloud.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "student"
+      ]
+    }
+  ]
+}
