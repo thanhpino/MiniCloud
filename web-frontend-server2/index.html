@@ -3,117 +3,400 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniCloud - Web Server 2</title>
+  <title>MiniCloud - Web Server 2 (Instance B)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #9333ea;
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #f8fafc;
+      --primary-glow: rgba(147, 51, 234, 0.35);
       --accent: #c084fc;
+      --node-color: #a855f7;
+      --node-glow: rgba(168, 85, 247, 0.4);
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(51, 65, 85, 0.6);
+      --card-hover: rgba(192, 132, 252, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #220e3d 0%, var(--bg) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      padding: 2rem;
-      box-sizing: border-box;
+      padding: 2.5rem 1.5rem;
+      line-height: 1.6;
     }
-    .badge {
-      background: #9333ea;
-      color: white;
-      padding: 0.5rem 1.25rem;
+
+    .status-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(147, 51, 234, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      padding: 0.45rem 1.25rem;
       border-radius: 9999px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #c084fc;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+      box-shadow: 0 0 20px var(--node-glow);
+      animation: pulseGlow 3s infinite ease-in-out;
     }
-    .container {
-      max-width: 800px;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #c084fc;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #c084fc;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px var(--node-glow); }
+      50% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
+    }
+
+    .main-wrapper {
+      max-width: 960px;
       width: 100%;
-      margin-top: 2rem;
-      background: var(--card);
-      border-radius: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    .hero-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
       padding: 2.5rem;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-      border: 1px solid #334155;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
     }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
     h1 {
-      margin-top: 0;
-      color: var(--accent);
-      font-size: 2.2rem;
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
     }
-    p {
-      line-height: 1.7;
-      color: #94a3b8;
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 1.8rem;
     }
-    .btn-group {
-      display: flex;
+
+    .server-badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
+      background: rgba(2, 6, 23, 0.7);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      border-radius: 0.85rem;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
     }
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
+
+    .info-item span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .info-item strong {
+      color: var(--accent);
       font-weight: 600;
-      transition: all 0.2s ease;
     }
-    .btn-primary {
-      background: var(--primary);
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 1.8rem 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .service-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      border-radius: 0.85rem;
+      padding: 1.4rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-hover);
+      background: rgba(30, 41, 59, 0.8);
+      box-shadow: 0 12px 24px -8px rgba(147, 51, 234, 0.25);
+    }
+
+    .service-card .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 0.6rem;
+      background: rgba(147, 51, 234, 0.15);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.4rem;
+    }
+
+    .service-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .service-card .arrow-link {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .highlight-card {
+      border-color: rgba(192, 132, 252, 0.5);
+      background: linear-gradient(145deg, rgba(147, 51, 234, 0.15), rgba(15, 23, 42, 0.7));
+    }
+
+    .highlight-card .icon-box {
+      background: #9333ea;
       color: white;
     }
-    .btn-primary:hover {
-      background: #7e22ce;
-      transform: translateY(-2px);
+
+    .api-tester {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 0.85rem;
+      padding: 1.25rem;
+      margin-top: 1rem;
     }
-    .btn-outline {
-      border: 1px solid #475569;
-      color: #e2e8f0;
+
+    .tester-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
     }
-    .btn-outline:hover {
-      background: #334155;
-      transform: translateY(-2px);
+
+    .tester-title {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
     }
-    .server-info {
+
+    .btn-test {
+      background: #9333ea;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-test:hover { background: #7e22ce; }
+
+    pre#apiOutput {
       background: #090d16;
-      border-left: 4px solid var(--accent);
-      padding: 1rem;
-      margin: 1.5rem 0;
-      border-radius: 0.25rem;
-      font-family: monospace;
-      font-size: 0.95rem;
+      padding: 0.9rem;
+      border-radius: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
       color: #c084fc;
+      overflow-x: auto;
+      max-height: 160px;
     }
+
+    footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .member-tags {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .member-tag {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .member-tag strong { color: #f1f5f9; }
   </style>
 </head>
 <body>
-  <div class="badge">Node: Web Server 2 (Instance B)</div>
-  <div class="container">
-    <h1>MiniCloud Web Frontend</h1>
-    <p>Chào mừng đến với hệ thống điện toán đám mây MiniCloud. Bạn đang được phục vụ bởi cụm tải Load Balancer Nginx.</p>
-    
-    <div class="server-info">
-      <strong>Server ID:</strong> web-frontend-server2 (Port 80)<br>
-      <strong>Internal IP:</strong> 172.28.0.12<br>
-      <strong>Load Balancer:</strong> Nginx Reverse Proxy (Round Robin)
+
+  <div class="status-bar">
+    <span class="status-dot"></span>
+    Node: Web Server 2 (Instance B) &bull; Port 80
+  </div>
+
+  <div class="main-wrapper">
+    <div class="hero-card">
+      <h1>MiniCloud Infrastructure</h1>
+      <p class="subtitle">Mô hình điện toán đám mây thu nhỏ với 9 máy chủ phân tán & Cân bằng tải Round Robin qua Nginx Reverse Proxy.</p>
+
+      <div class="server-badge-grid">
+        <div class="info-item">
+          <span>Container Name</span>
+          <strong>web-frontend-server2</strong>
+        </div>
+        <div class="info-item">
+          <span>Mạng Nội Bộ</span>
+          <strong>172.28.0.12:80</strong>
+        </div>
+        <div class="info-item">
+          <span>Cân Bằng Tải</span>
+          <strong>Nginx Round Robin</strong>
+        </div>
+        <div class="info-item">
+          <span>Subnet</span>
+          <strong>172.28.0.0/16</strong>
+        </div>
+      </div>
+
+      <div class="section-title">🚀 Cổng Dịch Vụ Hệ Thống</div>
+      <div class="services-grid">
+        <a href="/blog/" class="service-card highlight-card">
+          <div>
+            <div class="icon-box">📚</div>
+            <h3>Blog Kỹ Thuật Cá Nhân</h3>
+            <p>Tuyển tập 3 bài viết chuyên sâu về Kiến trúc 9 Server, Observability và Bảo mật Keycloak OIDC.</p>
+          </div>
+          <div class="arrow-link">Khám phá Blog →</div>
+        </a>
+
+        <a href="/student" class="service-card">
+          <div>
+            <div class="icon-box">👨‍🎓</div>
+            <h3>API Sinh Viên (JSON)</h3>
+            <p>Endpoint <code>/student</code> đọc danh sách 5 sinh viên từ file cấu hình nội bộ <code>students.json</code>.</p>
+          </div>
+          <div class="arrow-link">Xem Endpoint JSON →</div>
+        </a>
+
+        <a href="/api/students-db" class="service-card">
+          <div>
+            <div class="icon-box">🗄️</div>
+            <h3>API MariaDB Database</h3>
+            <p>Endpoint <code>/students-db</code> truy vấn dữ liệu sinh viên thời gian thực từ cơ sở dữ liệu <code>studentdb</code>.</p>
+          </div>
+          <div class="arrow-link">Truy vấn MariaDB →</div>
+        </a>
+
+        <a href="/auth/" class="service-card">
+          <div>
+            <div class="icon-box">🛡️</div>
+            <h3>Keycloak Identity IAM</h3>
+            <p>Admin console quản lý Realm <code>realm_21110001</code>, Client OIDC và tài khoản sinh viên.</p>
+          </div>
+          <div class="arrow-link">Mở Keycloak Console →</div>
+        </a>
+      </div>
+
+      <div class="section-title">⚡ Kiểm Thử API Trực Tiếp (Live Status)</div>
+      <div class="api-tester">
+        <div class="tester-header">
+          <span class="tester-title">GET /student (Reverse Proxy qua Gateway Port 80)</span>
+          <button class="btn-test" onclick="fetchStudentApi()">Gọi API Thử</button>
+        </div>
+        <pre id="apiOutput">// Nhấn "Gọi API Thử" để gửi request kiểm tra kết nối từ trình duyệt...</pre>
+      </div>
     </div>
 
-    <p>Khám phá các dịch vụ trong hệ thống:</p>
-    <div class="btn-group">
-      <a href="/blog/" class="btn btn-primary">Xem Blog Cá Nhân</a>
-      <a href="/student" class="btn btn-outline">API Danh Sách SV (JSON)</a>
-      <a href="/api/students-db" class="btn btn-outline">API MariaDB</a>
-      <a href="/auth/" class="btn btn-outline">Keycloak Login</a>
-    </div>
+    <footer>
+      <p>MiniCloud Microservices & Cloud Infrastructure Simulation &bull; Mạng cô lập Docker <code>cloud-net</code></p>
+      <div class="member-tags">
+        <span class="member-tag">Thành viên: <strong>Trương Cao Sang</strong> (524H0125)</span>
+        <span class="member-tag">Thành viên: <strong>Trương Minh Thành</strong> (524H0032)</span>
+      </div>
+    </footer>
   </div>
+
+  <script>
+    async function fetchStudentApi() {
+      const output = document.getElementById('apiOutput');
+      output.innerText = 'Đang gửi request đến /student...';
+      try {
+        const res = await fetch('/student');
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        output.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.innerText = `Lỗi kết nối: ${err.message}\n(Lưu ý: Nếu truy cập trực tiếp qua cổng 8080/8082 của Web, hãy truy cập qua Gateway cổng 80 để định tuyến sang Backend)`;
+      }
+    }
+  </script>
 </body>
 </html>

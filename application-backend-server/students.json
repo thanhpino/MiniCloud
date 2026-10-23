@@ -33,5 +33,19 @@
     "email": "ha.vu@cloud.local",
     "major": "Data Engineering",
     "role": "Sinh viên"
+  },
+  {
+    "id": "524H0125",
+    "name": "Truong Cao Sang",
+    "email": "sang.truong@cloud.local",
+    "major": "Cloud Computing",
+    "role": "Sinh viên"
+  },
+  {
+    "id": "524H0032",
+    "name": "Truong Minh Thanh",
+    "email": "thanh.truong@cloud.local",
+    "major": "DevOps Engineering",
+    "role": "Sinh viên"
   }
 ]

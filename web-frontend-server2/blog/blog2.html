@@ -3,24 +3,347 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bài 2: Cơ chế Giám sát với Prometheus & Grafana</title>
+  <title>Bài 2: Giám sát Hệ thống với Prometheus & Grafana - MiniCloud Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.7; }
-    h1 { color: #38bdf8; }
-    a { color: #38bdf8; text-decoration: none; }
-    .box { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #334155; margin-top: 1.5rem; }
+    :root {
+      --primary: #f59e0b;
+      --accent: #fbbf24;
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --border: rgba(51, 65, 85, 0.6);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #2b1803 0%, var(--bg) 85%);
+      color: var(--text);
+      line-height: 1.8;
+      padding: 2.5rem 1.5rem;
+    }
+    .article-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .nav-breadcrumbs {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .nav-breadcrumbs a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      transition: all 0.2s;
+    }
+    .nav-breadcrumbs a:hover {
+      background: rgba(30, 41, 59, 0.9);
+      border-color: var(--accent);
+      transform: translateX(-3px);
+    }
+    .article-header {
+      margin-bottom: 2.5rem;
+    }
+    .badge-category {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.3;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.2rem;
+    }
+    .author-meta-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      padding: 1rem 1.4rem;
+      border-radius: 0.85rem;
+    }
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #090d16;
+      font-size: 1.1rem;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    }
+    .meta-details { font-size: 0.88rem; }
+    .meta-author { font-weight: 700; color: #f1f5f9; }
+    .meta-sub { color: var(--muted); font-size: 0.8rem; }
+
+    /* Diagram Styles */
+    .diagram-card {
+      background: #070b14;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    .diagram-caption {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.8rem;
+      font-style: italic;
+    }
+
+    .article-body {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+    }
+    .article-body h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 2.2rem 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .article-body p { margin-bottom: 1.2rem; }
+    .article-body ul {
+      margin: 1rem 0 1.5rem 1.5rem;
+    }
+    .article-body li {
+      margin-bottom: 0.6rem;
+    }
+    .article-body strong { color: #f8fafc; }
+
+    .highlight-box {
+      background: rgba(30, 41, 59, 0.6);
+      border-left: 4px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+    }
+
+    pre {
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.2rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #fbbf24;
+      margin: 1.2rem 0;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(2, 6, 23, 0.7);
+      color: #fbbf24;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.3rem;
+      font-size: 0.88em;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .post-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav-action {
+      padding: 0.7rem 1.4rem;
+      border-radius: 0.6rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-prev {
+      background: rgba(30, 41, 59, 0.8);
+      color: #e2e8f0;
+      border: 1px solid var(--border);
+    }
+    .btn-prev:hover {
+      background: #334155;
+      transform: translateX(-3px);
+    }
+    .btn-next {
+      background: #f59e0b;
+      color: #090d16;
+      font-weight: 700;
+    }
+    .btn-next:hover {
+      background: #d97706;
+      transform: translateX(3px);
+    }
   </style>
 </head>
 <body>
-  <p><a href="/blog/">← Quay lại danh sách Blog</a></p>
-  <h1>Bài 2: Cơ chế Giám sát với Prometheus & Grafana</h1>
-  <p>Hệ thống giám sát MiniCloud cung cấp khả năng quan sát (observability) thời gian thực toàn diện:</p>
-  <div class="box">
-    <ul>
-      <li><strong>Prometheus (Port 9090):</strong> Định kỳ mỗi 15s scrape dữ liệu từ Node Exporter (Port 9100) và Web Frontend (Port 80).</li>
-      <li><strong>Node Exporter:</strong> Thu thập thông số hạt nhân Linux của máy chủ (CPU idle, RAM available, Network transmit/receive).</li>
-      <li><strong>Grafana Dashboard (Port 3000):</strong> Tự động nạp dashboard <em>System Health</em> qua file provisioning, hiển thị biểu đồ CPU, RAM, Network I/O.</li>
-    </ul>
-  </div>
+
+  <article class="article-container">
+    <div class="nav-breadcrumbs">
+      <a href="/blog/">← Quay lại Danh sách Blog</a>
+      <a href="/">Trang chủ MiniCloud ↗</a>
+    </div>
+
+    <header class="article-header">
+      <span class="badge-category">Observability & SRE &bull; Bài 2</span>
+      <h1>Cơ chế Giám sát & Quan Sát Hệ Thống với Prometheus & Grafana</h1>
+      <div class="author-meta-box">
+        <div class="avatar">T</div>
+        <div class="meta-details">
+          <div class="meta-author">Trương Minh Thành (MSSV: 524H0032)</div>
+          <div class="meta-sub">Đăng ngày 21/10/2026 &bull; Thời gian đọc: 4 phút &bull; Monitoring Stack (Port 9090 / 3000)</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sơ đồ kiến trúc Prometheus Observability SVG -->
+    <div class="diagram-card">
+      <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+        <defs>
+          <linearGradient id="bgGrad2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0f172a"/>
+            <stop offset="100%" stop-color="#090d16"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="320" rx="12" fill="url(#bgGrad2)" stroke="#1e293b"/>
+        
+        <!-- TARGETS BOX (Left) -->
+        <rect x="30" y="30" width="220" height="260" rx="8" fill="none" stroke="#475569" stroke-dasharray="4,4"/>
+        <text x="45" y="55" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">EXPORTERS & TARGETS</text>
+
+        <!-- Node Exporter -->
+        <rect x="50" y="80" width="180" height="55" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+        <text x="140" y="103" fill="#38bdf8" font-family="sans-serif" font-size="11" text-anchor="middle" font-weight="bold">Node Exporter</text>
+        <text x="140" y="121" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">172.28.0.61:9100/metrics</text>
+
+        <!-- Web Frontend 1 Metrics -->
+        <rect x="50" y="150" width="180" height="55" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+        <text x="140" y="173" fill="#34d399" font-family="sans-serif" font-size="11" text-anchor="middle" font-weight="bold">Web Server 1 Nginx</text>
+        <text x="140" y="191" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">172.28.0.11:80/metrics</text>
+
+        <!-- Web Frontend 2 Metrics -->
+        <rect x="50" y="220" width="180" height="55" rx="6" fill="#1e293b" stroke="#c084fc" stroke-width="1.5"/>
+        <text x="140" y="243" fill="#c084fc" font-family="sans-serif" font-size="11" text-anchor="middle" font-weight="bold">Web Server 2 Nginx</text>
+        <text x="140" y="261" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">172.28.0.12:80/metrics</text>
+
+        <!-- PULL ARROWS -->
+        <line x1="230" y1="107" x2="330" y2="155" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4"/>
+        <line x1="230" y1="177" x2="330" y2="165" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4"/>
+        <line x1="230" y1="247" x2="330" y2="175" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4"/>
+        <text x="280" y="135" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">HTTP Pull (15s)</text>
+
+        <!-- PROMETHEUS CORE (Middle) -->
+        <rect x="330" y="115" width="170" height="90" rx="8" fill="#d97706" stroke="#fbbf24" stroke-width="2"/>
+        <text x="415" y="145" fill="#ffffff" font-family="sans-serif" font-size="13" text-anchor="middle" font-weight="bold">PROMETHEUS</text>
+        <text x="415" y="165" fill="#fef3c7" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">172.28.0.60:9090</text>
+        <text x="415" y="185" fill="#fef3c7" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">TSDB & PromQL Engine</text>
+
+        <!-- PROMQL QUERY ARROW -->
+        <line x1="500" y1="160" x2="570" y2="160" stroke="#38bdf8" stroke-width="2"/>
+        <text x="535" y="150" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">PromQL</text>
+
+        <!-- GRAFANA DASHBOARD (Right) -->
+        <rect x="570" y="85" width="160" height="150" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="2"/>
+        <text x="650" y="115" fill="#fb923c" font-family="sans-serif" font-size="12" text-anchor="middle" font-weight="bold">GRAFANA DASHBOARD</text>
+        <text x="650" y="132" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">Port 3000</text>
+        
+        <!-- Panels inside Grafana -->
+        <rect x="585" y="145" width="130" height="22" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+        <text x="650" y="160" fill="#34d399" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">📊 Panel 1: CPU %</text>
+        
+        <rect x="585" y="173" width="130" height="22" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+        <text x="650" y="188" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">📈 Panel 2: RAM Memory</text>
+
+        <rect x="585" y="201" width="130" height="22" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+        <text x="650" y="216" fill="#f472b6" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">📉 Panel 3: Network I/O</text>
+      </svg>
+      <div class="diagram-caption">Hình 2.1: Quy trình thu thập dữ liệu chỉ số (Metrics Scrape) và trực quan hóa thời gian thực</div>
+    </div>
+
+    <div class="article-body">
+      <h2>1. Vì sao Observability là cốt lõi trong hệ thống Cloud?</h2>
+      <p>
+        Trong kiến trúc phân tán gồm nhiều máy chủ nhỏ lẻ như MiniCloud, người quản trị không thể trực tiếp SSH vào từng máy để kiểm tra lệnh <code>top</code> hay <code>free -m</code>. Thay vào đó, chúng ta cần một cơ chế giám sát tập trung tự động (Centralized Observability).
+      </p>
+
+      <h2>2. Mô hình Pull-Based của Prometheus</h2>
+      <p>
+        Khác với các hệ thống giám sát truyền thống bắt agent gửi dữ liệu về (Push), <strong>Prometheus</strong> hoạt động theo cơ chế <strong>Pull (Scrape)</strong>. Định kỳ mỗi 15 giây, Prometheus sẽ chủ động gửi HTTP GET request đến các endpoint <code>/metrics</code> đã được khai báo:
+      </p>
+
+      <pre><code># Trích đoạn file prometheus.yml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['monitoring-node-exporter-server:9100']
+
+  - job_name: 'web-frontend'
+    static_configs:
+      - targets:
+          - 'web-frontend-server:80'
+          - 'web-frontend-server2:80'</code></pre>
+
+      <h2>3. Thiết kế Dashboard "System Health" trên Grafana</h2>
+      <p>
+        Grafana tại cổng <code>3000</code> kết nối vào Prometheus thông qua ngôn ngữ truy vấn mạnh mẽ <strong>PromQL</strong>. Dashboard tự động hiển thị 3 chỉ số then chốt:
+      </p>
+      <ul>
+        <li><strong>CPU Utilization (%):</strong> Tính toán tỷ lệ CPU bận rộn bằng cách lấy 100% trừ đi lượng CPU ở trạng thái nghỉ (idle).</li>
+        <li><strong>RAM Usage:</strong> Đo lường lượng bộ nhớ thực tế hệ thống đang phân bổ cho các tiến trình container.</li>
+        <li><strong>Network Traffic (I/O):</strong> Theo dõi lưu lượng gói tin gửi và nhận (Transmit / Receive Bytes) qua card mạng <code>cloud-net</code>.</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>💡 Kết quả đạt được:</strong> Trạng thái của cả 2 mục <code>node-exporter</code> và <code>web-frontend</code> trên giao diện Prometheus Targets luôn hiển thị <code>UP</code> với màu xanh lá, chứng minh các luồng thu thập dữ liệu hoạt động ổn định và liên tục.
+      </div>
+    </div>
+
+    <div class="post-nav-footer">
+      <a href="/blog/blog1.html" class="btn-nav-action btn-prev">← Bài 1: Kiến trúc 9 Server</a>
+      <a href="/blog/blog3.html" class="btn-nav-action btn-next">Bài tiếp theo: Bảo mật với Keycloak →</a>
+    </div>
+  </article>
+
 </body>
 </html>

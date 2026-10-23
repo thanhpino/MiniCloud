@@ -3,25 +3,337 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bài 3: Bảo mật API với Keycloak OIDC</title>
+  <title>Bài 3: Bảo mật API với Keycloak OIDC - MiniCloud Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.7; }
-    h1 { color: #38bdf8; }
-    a { color: #38bdf8; text-decoration: none; }
-    .box { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #334155; margin-top: 1.5rem; }
+    :root {
+      --primary: #8b5cf6;
+      --accent: #c084fc;
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --border: rgba(51, 65, 85, 0.6);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #200d38 0%, var(--bg) 85%);
+      color: var(--text);
+      line-height: 1.8;
+      padding: 2.5rem 1.5rem;
+    }
+    .article-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .nav-breadcrumbs {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .nav-breadcrumbs a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      transition: all 0.2s;
+    }
+    .nav-breadcrumbs a:hover {
+      background: rgba(30, 41, 59, 0.9);
+      border-color: var(--accent);
+      transform: translateX(-3px);
+    }
+    .article-header {
+      margin-bottom: 2.5rem;
+    }
+    .badge-category {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.3;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.2rem;
+    }
+    .author-meta-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      padding: 1rem 1.4rem;
+      border-radius: 0.85rem;
+    }
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      font-size: 1.1rem;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    }
+    .meta-details { font-size: 0.88rem; }
+    .meta-author { font-weight: 700; color: #f1f5f9; }
+    .meta-sub { color: var(--muted); font-size: 0.8rem; }
+
+    /* Diagram Styles */
+    .diagram-card {
+      background: #070b14;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    .diagram-caption {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.8rem;
+      font-style: italic;
+    }
+
+    .article-body {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+    }
+    .article-body h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 2.2rem 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .article-body p { margin-bottom: 1.2rem; }
+    .article-body ul {
+      margin: 1rem 0 1.5rem 1.5rem;
+    }
+    .article-body li {
+      margin-bottom: 0.6rem;
+    }
+    .article-body strong { color: #f8fafc; }
+
+    .highlight-box {
+      background: rgba(30, 41, 59, 0.6);
+      border-left: 4px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+    }
+
+    pre {
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.2rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #c084fc;
+      margin: 1.2rem 0;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(2, 6, 23, 0.7);
+      color: #c084fc;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.3rem;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    .post-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav-action {
+      padding: 0.7rem 1.4rem;
+      border-radius: 0.6rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-prev {
+      background: rgba(30, 41, 59, 0.8);
+      color: #e2e8f0;
+      border: 1px solid var(--border);
+    }
+    .btn-prev:hover {
+      background: #334155;
+      transform: translateX(-3px);
+    }
+    .btn-next {
+      background: #8b5cf6;
+      color: white;
+      font-weight: 700;
+    }
+    .btn-next:hover {
+      background: #7c3aed;
+      transform: translateX(3px);
+    }
   </style>
 </head>
 <body>
-  <p><a href="/blog/">← Quay lại danh sách Blog</a></p>
-  <h1>Bài 3: Bảo mật API với Keycloak OIDC</h1>
-  <p>Triển khai định danh tập trung (Identity and Access Management - IAM) thông qua Keycloak 24+:</p>
-  <div class="box">
-    <ul>
-      <li><strong>Realm:</strong> Khởi tạo realm riêng biệt phục vụ người dùng sinh viên.</li>
-      <li><strong>Client:</strong> Client <code>flask-app</code> hỗ trợ Direct Access Grants (Password Grant) để lấy JWT Bearer token trực tiếp.</li>
-      <li><strong>User:</strong> Đã cấu hình sẵn 2 tài khoản sinh viên <code>sv01</code> và <code>sv02</code> với mật khẩu chuẩn.</li>
-      <li><strong>Protected Endpoint:</strong> Route <code>/secure</code> kiểm tra tính hợp lệ của token trước khi phản hồi dữ liệu.</li>
-    </ul>
-  </div>
+
+  <article class="article-container">
+    <div class="nav-breadcrumbs">
+      <a href="/blog/">← Quay lại Danh sách Blog</a>
+      <a href="/">Trang chủ MiniCloud ↗</a>
+    </div>
+
+    <header class="article-header">
+      <span class="badge-category">Identity & Security &bull; Bài 3</span>
+      <h1>Định Danh Tập Trung & Bảo Mật REST API với Keycloak OIDC & JWT</h1>
+      <div class="author-meta-box">
+        <div class="avatar">M</div>
+        <div class="meta-details">
+          <div class="meta-author">Nhóm MiniCloud (Trương Cao Sang & Trương Minh Thành)</div>
+          <div class="meta-sub">Đăng ngày 22/10/2026 &bull; Thời gian đọc: 6 phút &bull; Keycloak 24+ & OpenID Connect</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sơ đồ kiến trúc Xác thực OIDC / OAuth2 SVG -->
+    <div class="diagram-card">
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+        <defs>
+          <linearGradient id="bgGrad3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0f172a"/>
+            <stop offset="100%" stop-color="#090d16"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="300" rx="12" fill="url(#bgGrad3)" stroke="#1e293b"/>
+        
+        <!-- STEP 1: USER / CLIENT -->
+        <rect x="40" y="90" width="160" height="110" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+        <text x="120" y="125" fill="#38bdf8" font-family="sans-serif" font-size="12" text-anchor="middle" font-weight="bold">Client / Developer</text>
+        <text x="120" y="145" fill="#e2e8f0" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">User: sv01 / sv02</text>
+        <text x="120" y="165" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">Pass: password123</text>
+
+        <!-- STEP 2: KEYCLOAK IAM -->
+        <rect x="300" y="35" width="180" height="100" rx="8" fill="#581c87" stroke="#a855f7" stroke-width="2"/>
+        <text x="390" y="65" fill="#ffffff" font-family="sans-serif" font-size="13" text-anchor="middle" font-weight="bold">KEYCLOAK IAM</text>
+        <text x="390" y="85" fill="#e9d5ff" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">172.28.0.50:8080</text>
+        <text x="390" y="105" fill="#c084fc" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">Realm: realm_21110001</text>
+
+        <!-- STEP 3: FLASK BACKEND -->
+        <rect x="560" y="90" width="160" height="110" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+        <text x="640" y="125" fill="#34d399" font-family="sans-serif" font-size="12" text-anchor="middle" font-weight="bold">Flask REST Backend</text>
+        <text x="640" y="145" fill="#fbbf24" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">172.28.0.20:5000</text>
+        <text x="640" y="165" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">Endpoint: /secure</text>
+
+        <!-- ARROWS & LABELS -->
+        <!-- 1. Post credentials -->
+        <path d="M 190 95 L 300 70" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="215" y="70" fill="#c084fc" font-family="'JetBrains Mono', monospace" font-size="9">1. Direct Grant</text>
+
+        <!-- 2. Return JWT Token -->
+        <path d="M 300 95 L 200 135" stroke="#a855f7" stroke-width="2" stroke-dasharray="3,3"/>
+        <text x="220" y="130" fill="#c084fc" font-family="'JetBrains Mono', monospace" font-size="9">2. JWT Token</text>
+
+        <!-- 3. Request Secure Resource -->
+        <path d="M 200 170 L 560 170" stroke="#38bdf8" stroke-width="2"/>
+        <text x="380" y="163" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">3. GET /secure (Header: Bearer &lt;token&gt;)</text>
+
+        <!-- 4. Verify & Response 200 -->
+        <path d="M 560 185 L 200 185" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3"/>
+        <text x="380" y="200" fill="#34d399" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">4. 200 OK + Payload Claims (Access Granted)</text>
+      </svg>
+      <div class="diagram-caption">Hình 3.1: Quy trình cấp phát JWT Bearer Token qua Direct Access Grants và xác minh tại Backend</div>
+    </div>
+
+    <div class="article-body">
+      <h2>1. Vì sao không dùng Session truyền thống trong Cloud?</h2>
+      <p>
+        Trong kiến trúc phân tán có cân bằng tải Round Robin (như Web 1 và Web 2), nếu dùng Session lưu trong RAM máy chủ thì khi request sau bị chuyển sang máy chủ khác, trạng thái đăng nhập sẽ bị mất ngay lập tức (Session State Inconsistency).
+      </p>
+      <p>
+        Giải pháp chuẩn công nghiệp là <strong>Stateless Authentication (Xác thực phi trạng thái)</strong> với chuẩn <strong>OpenID Connect (OIDC)</strong> và <strong>JSON Web Token (JWT)</strong> do <strong>Keycloak</strong> quản lý.
+      </p>
+
+      <h2>2. Mô hình Realm, Client & User trong Keycloak</h2>
+      <ul>
+        <li><strong>Realm (<code>realm_21110001</code>):</strong> Phân vùng bảo mật cô lập chứa toàn bộ cấu hình người dùng và ứng dụng của dự án.</li>
+        <li><strong>Client (<code>flask-app</code>):</strong> Đăng ký ứng dụng Backend với Keycloak, kích hoạt chế độ Direct Access Grants (Password Grant) phục vụ kiểm thử REST API qua CLI hoặc Postman.</li>
+        <li><strong>Users (<code>sv01</code>, <code>sv02</code>):</strong> Hai tài khoản sinh viên được tạo tự động với mật khẩu an toàn <code>password123</code>.</li>
+      </ul>
+
+      <h2>3. Đoạn mã Python xác thực Token tại Flask Backend</h2>
+      <pre><code># Trích đoạn endpoint /secure trong app.py
+@app.route("/secure", methods=["GET"])
+def secure_endpoint():
+    auth_header = request.headers.get("Authorization", None)
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"status": "unauthorized", "message": "Missing Bearer token"}), 401
+
+    token = auth_header.split(" ")[1]
+    try:
+        # Giải mã Payload Base64URL của JWT Token
+        payload_b64 = token.split(".")[1]
+        payload_b64 += "=" * ((4 - len(payload_b64) % 4) % 4)
+        payload = json.loads(base64.urlsafe_b64decode(payload_b64).decode("utf-8"))
+        
+        return jsonify({
+            "status": "authenticated",
+            "message": "Access granted to secure resource!",
+            "user": {
+                "preferred_username": payload.get("preferred_username"),
+                "email": payload.get("email")
+            }
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"Invalid Token: {str(e)}"}), 400</code></pre>
+
+      <div class="highlight-box">
+        <strong>💡 Kết quả xác thực:</strong> Khi gửi kèm Header <code>Authorization: Bearer &lt;token&gt;</code> lấy từ Keycloak, endpoint <code>/secure</code> phản hồi mã <code>200 OK</code> kèm thông tin định danh của chính sinh viên đó (username, email, roles).
+      </div>
+    </div>
+
+    <div class="post-nav-footer">
+      <a href="/blog/blog2.html" class="btn-nav-action btn-prev">← Bài 2: Giám sát Prometheus</a>
+      <a href="/" class="btn-nav-action btn-next">Về Trang chủ MiniCloud →</a>
+    </div>
+  </article>
+
 </body>
 </html>
