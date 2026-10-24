@@ -37,7 +37,17 @@ Hệ thống điện toán đám mây thu nhỏ mô phỏng môi trường Cloud
 - Docker Engine >= 24.x
 - Docker Compose >= 2.x
 
-### 2. Khởi chạy toàn bộ hệ thống
+### 2. Thiết lập cấu hình môi trường (.env)
+Trước khi khởi chạy lần đầu tiên, hãy tạo file `.env` từ file mẫu:
+```bash
+cp .env.example .env
+```
+> **Ghi chú:** Mở file `.env` và điền tài khoản Docker Hub của bạn vào biến `DOCKERHUB_USERNAME`:
+> ```env
+> DOCKERHUB_USERNAME=bevissava
+> ```
+
+### 3. Khởi chạy toàn bộ hệ thống
 ```bash
 docker compose up -d --build
 ```
@@ -46,6 +56,40 @@ Kiểm tra trạng thái các container:
 ```bash
 docker compose ps
 ```
+
+### 4. Tùy chỉnh Docker Hub Image (Dành cho người khác triển khai độc lập)
+Nếu bạn muốn tự build và lưu trữ image trên tài khoản Docker Hub riêng:
+
+1. **Chuẩn bị file môi trường `.env`:**
+   ```bash
+   cp .env.example .env
+   ```
+   Mở file `.env` và thay đổi `DOCKERHUB_USERNAME` thành tài khoản của bạn:
+   ```env
+   DOCKERHUB_USERNAME=<tai_khoan_dockerhub_cua_ban>
+   ```
+
+2. **Build và Push image lên Docker Hub cá nhân:**
+   ```bash
+   # Đăng nhập Docker Hub
+   docker login
+
+   # Build các custom image với kiến trúc chuẩn Linux amd64 (tương thích EC2/mọi máy chủ)
+   docker build --platform linux/amd64 -t $DOCKERHUB_USERNAME/myminicloud-web:v1 ./web-frontend-server
+   docker build --platform linux/amd64 -t $DOCKERHUB_USERNAME/myminicloud-web2:v1 ./web-frontend-server2
+   docker build --platform linux/amd64 -t $DOCKERHUB_USERNAME/myminicloud-backend:v1 ./application-backend-server
+
+   # Push lên Docker Hub (đảm bảo repository để chế độ Public)
+   docker push $DOCKERHUB_USERNAME/myminicloud-web:v1
+   docker push $DOCKERHUB_USERNAME/myminicloud-web2:v1
+   docker push $DOCKERHUB_USERNAME/myminicloud-backend:v1
+   ```
+
+3. **Khởi chạy hệ thống với Image mới:**
+   ```bash
+   docker compose pull
+   docker compose up -d
+   ```
 
 ---
 

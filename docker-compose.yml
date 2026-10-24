@@ -112,6 +112,7 @@ services:
 
   # 7. Web Frontend Server 1
   web-frontend-server:
+    image: ${DOCKERHUB_USERNAME}/myminicloud-web:v1
     build:
       context: ./web-frontend-server
       dockerfile: Dockerfile
@@ -125,6 +126,7 @@ services:
 
   # 8. Web Frontend Server 2 (Load Balancer Round Robin Partner)
   web-frontend-server2:
+    image: ${DOCKERHUB_USERNAME}/myminicloud-web2:v1
     build:
       context: ./web-frontend-server2
       dockerfile: Dockerfile
@@ -138,6 +140,7 @@ services:
 
   # 9. Application Backend Server (Flask REST API)
   application-backend-server:
+    image: ${DOCKERHUB_USERNAME}/myminicloud-backend:v1
     build:
       context: ./application-backend-server
       dockerfile: Dockerfile
