@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniCloud Engineering Blog - Chia sẻ Kỹ thuật & Hạ tầng Đám mây</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #9333ea;
+      --accent: #c084fc;
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.7);
+      --border: rgba(51, 65, 85, 0.6);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #220e3d 0%, var(--bg) 80%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2.5rem 1.5rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .top-nav {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.5rem 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(30, 41, 59, 0.9);
+      transform: translateX(-3px);
+      border-color: var(--accent);
+    }
+
+    .brand-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #c084fc;
+      background: rgba(147, 51, 234, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header-section h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.8rem;
+    }
+
+    .header-section p {
+      color: var(--muted);
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 1.8rem auto;
+    }
+
+    .tags-filter {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .tag-btn {
+      background: rgba(30, 41, 59, 0.6);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tag-btn:hover, .tag-btn.active {
+      background: #9333ea;
+      color: white;
+      border-color: #c084fc;
+      box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .post-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 1.2rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .post-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(192, 132, 252, 0.5);
+      box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(147, 51, 234, 0.2);
+    }
+
+    .card-banner {
+      width: 100%;
+      height: 180px;
+      background: #0b1329;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card-banner svg {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease;
+    }
+
+    .post-card:hover .card-banner svg {
+      transform: scale(1.05);
+    }
+
+    .card-content {
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .category-badge {
+      background: rgba(147, 51, 234, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .post-card h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .post-card p {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(51, 65, 85, 0.4);
+      padding-top: 1rem;
+      margin-top: auto;
+    }
+
+    .author-info {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.82rem;
+    }
+
+    .author-name {
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .author-role {
+      color: #64748b;
+      font-size: 0.75rem;
+    }
+
+    .btn-read {
+      background: #9333ea;
+      color: white;
+      text-decoration: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .btn-read:hover {
+      background: #7e22ce;
+      transform: translateX(3px);
+      box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+    }
+
+    footer {
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      color: #64748b;
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-nav">
+      <a href="/" class="back-link">← Quay lại Trang Chủ MiniCloud</a>
+      <span class="brand-badge">Node 2 Web Instance</span>
+    </div>
+
+    <div class="header-section">
+      <h1>Blog Kỹ Thuật MiniCloud</h1>
+      <p>Tổng hợp chuyên đề nghiên cứu, thiết kế kiến trúc và triển khai thực chiến hệ thống phân tán đa tầng.</p>
+      
+      <div class="tags-filter">
+        <button class="tag-btn active">Tất cả bài viết</button>
+        <button class="tag-btn">Hạ tầng & Mạng</button>
+        <button class="tag-btn">Giám sát & SRE</button>
+        <button class="tag-btn">Bảo mật & IAM</button>
+      </div>
+    </div>
+
+    <div class="posts-grid">
+      <!-- Bài 1 -->
+      <article class="post-card">
+        <div class="card-banner">
+          <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#9333ea" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="180" fill="url(#grad1)"/>
+            <circle cx="200" cy="90" r="45" fill="none" stroke="#c084fc" stroke-width="2" stroke-dasharray="4,4"/>
+            <!-- Gateway -->
+            <rect x="160" y="70" width="80" height="40" rx="8" fill="#1e293b" stroke="#c084fc" stroke-width="2"/>
+            <text x="200" y="95" fill="#c084fc" font-size="12" font-family="monospace" text-anchor="middle" font-weight="bold">GATEWAY</text>
+            <!-- Nodes -->
+            <rect x="40" y="30" width="65" height="32" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+            <text x="72" y="50" fill="#34d399" font-size="10" font-family="monospace" text-anchor="middle">DNS-53</text>
+            
+            <rect x="295" y="30" width="65" height="32" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="327" y="50" fill="#fbbf24" font-size="10" font-family="monospace" text-anchor="middle">WEB-1/2</text>
+            
+            <rect x="40" y="120" width="65" height="32" rx="6" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.5"/>
+            <text x="72" y="140" fill="#a78bfa" font-size="10" font-family="monospace" text-anchor="middle">IAM-OIDC</text>
+            
+            <rect x="295" y="120" width="65" height="32" rx="6" fill="#0f172a" stroke="#ec4899" stroke-width="1.5"/>
+            <text x="327" y="140" fill="#f472b6" font-size="10" font-family="monospace" text-anchor="middle">RDS+S3</text>
+            
+            <!-- Lines -->
+            <line x1="160" y1="80" x2="105" y2="50" stroke="#475569" stroke-width="1.5"/>
+            <line x1="240" y1="80" x2="295" y2="50" stroke="#475569" stroke-width="1.5"/>
+            <line x1="160" y1="100" x2="105" y2="130" stroke="#475569" stroke-width="1.5"/>
+            <line x1="240" y1="100" x2="295" y2="130" stroke="#475569" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div>
+            <div class="post-meta">
+              <span class="category-badge">Architecture</span>
+              <span>&bull; 5 phút đọc</span>
+            </div>
+            <h2>Bài 1: Kiến trúc Hạ tầng 9 Server MiniCloud</h2>
+            <p>Mô hình chi tiết về mạng cô lập `cloud-net`, phân bổ địa chỉ IP tĩnh, cơ chế phân giải tên miền Bind9 và cân bằng tải Round Robin.</p>
+          </div>
+          <div class="card-footer">
+            <div class="author-info">
+              <span class="author-name">Trương Cao Sang</span>
+              <span class="author-role">MSSV: 524H0125</span>
+            </div>
+            <a href="/blog/blog1.html" class="btn-read">Đọc bài →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Bài 2 -->
+      <article class="post-card">
+        <div class="card-banner">
+          <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="180" fill="url(#grad2)"/>
+            <!-- Prometheus Graph wave -->
+            <path d="M 30 140 Q 90 60, 150 110 T 260 80 T 370 40" fill="none" stroke="#f59e0b" stroke-width="3"/>
+            <path d="M 30 150 Q 80 120, 160 140 T 270 110 T 370 70" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3,3"/>
+            <circle cx="150" cy="110" r="5" fill="#f59e0b"/>
+            <circle cx="260" cy="80" r="5" fill="#f59e0b"/>
+            <circle cx="370" cy="40" r="5" fill="#f59e0b"/>
+            <!-- Dashboard widget -->
+            <rect x="50" y="25" width="120" height="45" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
+            <text x="65" y="44" fill="#fbbf24" font-size="11" font-family="monospace">CPU: 24.8%</text>
+            <text x="65" y="60" fill="#94a3b8" font-size="10" font-family="monospace">RAM: 1.42 GB</text>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div>
+            <div class="post-meta">
+              <span class="category-badge">Observability</span>
+              <span>&bull; 4 phút đọc</span>
+            </div>
+            <h2>Bài 2: Cơ chế Giám sát với Prometheus & Grafana</h2>
+            <p>Phương pháp thu thập chỉ số hạt nhân Linux qua Node Exporter, cấu hình scrape định kỳ và trực quan hóa Dashboard System Health.</p>
+          </div>
+          <div class="card-footer">
+            <div class="author-info">
+              <span class="author-name">Trương Minh Thành</span>
+              <span class="author-role">MSSV: 524H0032</span>
+            </div>
+            <a href="/blog/blog2.html" class="btn-read">Đọc bài →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Bài 3 -->
+      <article class="post-card">
+        <div class="card-banner">
+          <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="180" fill="url(#grad3)"/>
+            <!-- Shield Lock -->
+            <path d="M 200 35 L 250 55 V 105 C 250 135, 200 155, 200 155 C 200 155, 150 135, 150 105 V 55 Z" fill="#1e293b" stroke="#a855f7" stroke-width="2.5"/>
+            <circle cx="200" cy="90" r="10" fill="#c084fc"/>
+            <rect x="196" y="90" width="8" height="18" fill="#c084fc"/>
+            <!-- JWT Token Text -->
+            <rect x="40" y="70" width="80" height="35" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+            <text x="80" y="92" fill="#c084fc" font-size="10" font-family="monospace" text-anchor="middle">KEYCLOAK</text>
+            <rect x="280" y="70" width="80" height="35" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+            <text x="320" y="92" fill="#38bdf8" font-size="10" font-family="monospace" text-anchor="middle">JWT AUTH</text>
+            <line x1="120" y1="87" x2="150" y2="87" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="250" y1="87" x2="280" y2="87" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div>
+            <div class="post-meta">
+              <span class="category-badge">Security & IAM</span>
+              <span>&bull; 6 phút đọc</span>
+            </div>
+            <h2>Bài 3: Bảo mật API với Keycloak OIDC & JWT</h2>
+            <p>Triển khai định danh tập trung với Keycloak, cấp phát Bearer Token qua Direct Access Grants và bảo vệ endpoint `/secure` trên Flask API.</p>
+          </div>
+          <div class="card-footer">
+            <div class="author-info">
+              <span class="author-name">Nhóm MiniCloud</span>
+              <span class="author-role">Dự Án Điện Toán Đám Mây</span>
+            </div>
+            <a href="/blog/blog3.html" class="btn-read">Đọc bài →</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 MiniCloud Project &bull; Thiết kế cho hệ thống Microservices phân tán</p>
+    </footer>
+  </div>
+
+</body>
+</html>

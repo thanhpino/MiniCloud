@@ -1,0 +1,7 @@
+//
+// Zone definition for internal domain cloud.local
+//
+zone "cloud.local" {
+    type master;
+    file "/etc/bind/zones/db.cloud.local";
+};
