@@ -2,7 +2,7 @@
 # Test Keycloak OIDC Token retrieval for sv01 and sv02
 KEYCLOAK_HOST=${1:-"localhost"}
 KEYCLOAK_PORT=${2:-"8081"}
-REALM="realm_21110001"
+REALM="realm_524h0032_524h0125"
 CLIENT_ID="flask-app"
 USERNAME=${3:-"sv01"}
 PASSWORD=${4:-"password123"}
