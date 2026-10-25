@@ -1,6 +1,6 @@
-# ☁️ MINICLOUD - MÔ PHỎNG HỆ THỐNG ĐIỆN TOÁN ĐÁM MÂY (CLOUD COMPUTING)
+# ☁️ MINICLOUD - MÔ PHỎNG HỆ THỐNG ĐIỆN TOÁN ĐÁM MÂY
 
-> **ĐỒ ÁN CUỐI KỲ MÔN ĐIỆN TOÁN ĐÁM MÂY (CLOUD COMPUTING)**  
+> **ĐỒ ÁN CUỐI KỲ MÔN ĐIỆN TOÁN ĐÁM MÂY**  
 > **TRƯỜNG ĐẠI HỌC TÔN ĐỨC THẮNG (TDTU) - KHOA CÔNG NGHỆ THÔNG TIN**  
 
 Hệ thống **MiniCloud** được thiết kế và xây dựng nhằm mô phỏng một nền tảng Cloud Platform thu nhỏ hoàn chỉnh (tương đương AWS, GCP, Azure) với **9 loại máy chủ chuyên biệt**, vận hành trong các Docker container độc lập, kết nối qua mạng cô lập `cloud-net` (Subnet: `172.28.0.0/16`) và triển khai thực tế trên **máy Local** cùng **AWS EC2 (Ubuntu)**.
@@ -9,10 +9,10 @@ Hệ thống **MiniCloud** được thiết kế và xây dựng nhằm mô ph�
 
 ## 👥 THÔNG TIN SINH VIÊN THỰC HIỆN
 
-| STT | Họ và Tên | Mã số sinh viên (MSSV) | Lớp | Vai trò & Phụ trách kỹ thuật |
-| :---: | :--- | :---: | :---: | :--- |
-| **1** | **Trương Minh Thành** *(Thành viên A)* | **524H0032** | **24h502023** | **Lead Infra, Security, Monitoring & Cloud Deploy:**<br>- Bind9 Internal DNS (`db.cloud.local`)<br>- Prometheus & Node Exporter Metrics Scrape<br>- Grafana Dashboard giám sát System Health<br>- Keycloak OIDC IAM Identity Server (`realm_524h0032_524h0125`)<br>- Nginx API Gateway & Round Robin Load Balancer 2 Web Nodes<br>- Hạ tầng AWS EC2, Swap RAM, Security Groups |
-| **2** | **Trương Cao Sang** *(Thành viên B)* | **524H0125** | **24h50203** | **Lead Application, Database, Storage & Docker Hub:**<br>- Web Server 1 & Web Server 2 (Modern Responsive HTML & 3 Blog Posts)<br>- Flask REST API Backend (`/hello`, `/student`, `/students-db`, `/secure`)<br>- MariaDB RDS (`minicloud` & `studentdb`)<br>- MinIO S3-Compatible Object Storage (`profile-pics`, `documents`)<br>- Đóng gói & Phát hành Images trên Docker Hub (`bevissava`) |
+| STT | Họ và Tên | Mã số sinh viên (MSSV) | Vai trò & Phụ trách kỹ thuật |
+| :---: | :--- | :---: | :---: |
+| **1** | **Trương Minh Thành** | **524H0032** | **Lead Infra, Security, Monitoring & Cloud Deploy:**<br>- Bind9 Internal DNS (`db.cloud.local`)<br>- Prometheus & Node Exporter Metrics Scrape<br>- Grafana Dashboard giám sát System Health<br>- Keycloak OIDC IAM Identity Server (`realm_524h0032_524h0125`)<br>- Nginx API Gateway & Round Robin Load Balancer 2 Web Nodes<br>- Hạ tầng AWS EC2, Swap RAM, Security Groups |
+| **2** | **Trương Cao Sang**  | **524H0125** | **Lead Application, Database, Storage & Docker Hub:**<br>- Web Server 1 & Web Server 2 (Modern Responsive HTML & 3 Blog Posts)<br>- Flask REST API Backend (`/hello`, `/student`, `/students-db`, `/secure`)<br>- MariaDB RDS (`minicloud` & `studentdb`)<br>- MinIO S3-Compatible Object Storage (`profile-pics`, `documents`)<br>- Đóng gói & Phát hành Images trên Docker Hub (`bevissava`) |
 
 ---
 
@@ -34,7 +34,7 @@ Hệ thống **MiniCloud** được thiết kế và xây dựng nhằm mô ph�
 
 ---
 
-## 📦 DOCKER HUB REGISTRY (OFFICIAL RELEASE)
+## 📦 DOCKER HUB REGISTRY 
 
 Các Docker Images tùy chỉnh của dự án đã được build chuẩn kiến trúc `linux/amd64` và phát hành công khai (Public) trên Docker Hub bởi thành viên **Trương Cao Sang**:
 
@@ -64,7 +64,8 @@ DOCKERHUB_USERNAME=bevissava
 
 ### 3. Khởi chạy toàn bộ hệ thống
 ```bash
-# Tải các image từ Docker Hub và khởi chạy các container ngầm
+# Tải các image từ Docker Hub và khởi chạy các container
+# nếu khởi chạy ngầm thì thêm cờ -d
 docker compose up -d
 
 # Kiểm tra trạng thái hoạt động của toàn bộ 11 containers
@@ -73,7 +74,7 @@ docker compose ps
 
 ---
 
-## 🧪 KỊCH BẢN KIỂM THỬ ĐẦY ĐỦ (DEMO & ĐÁNH GIÁ 10 ĐIỂM)
+## KỊCH BẢN KIỂM THỬ ĐẦY ĐỦ
 
 ### 1. Web Frontend & Cân bằng tải Round Robin (Trương Cao Sang & Trương Minh Thành)
 - **Truy cập trực tiếp Web 1:** `http://localhost:8080/` (HTTP 200 OK)
@@ -211,4 +212,6 @@ docker exec -it application-backend-server ping -c 2 relational-database-server
 - [x] **Triển khai hoàn chỉnh trên môi trường Localhost và AWS EC2**
 
 ---
-*Dự án hoàn thành bởi nhóm sinh viên Khoa Công nghệ Thông tin - Trường Đại học Tôn Đức Thắng (TDTU).*
+*Dự án hoàn thành bởi nhóm sinh viên Trương Minh Thành & Trương Cao Sang*
+*Khoa Công nghệ Thông tin - Trường Đại học Tôn Đức Thắng (TDTU).*
+*Đồ án chỉ phục vụ cho mục đích môn học*
