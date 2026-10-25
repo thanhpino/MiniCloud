@@ -1,6 +1,6 @@
 services:
   # ============================================================================
-  # 👥 THÀNH VIÊN A: INFRA, SECURITY & MONITORING
+  # 👥 PHÂN CÔNG: TRƯƠNG MINH THÀNH (MSSV: 524H0032) - INFRA, SECURITY & MONITORING
   # ============================================================================
 
   # 1. Internal DNS Server (Bind9)
@@ -107,7 +107,7 @@ services:
         ipv4_address: 172.28.0.10
 
   # ============================================================================
-  # 👥 THÀNH VIÊN B: APPLICATION, DATA & STORAGE
+  # 👥 PHÂN CÔNG: TRƯƠNG CAO SANG (MSSV: 524H0125) - APPLICATION, DATA & STORAGE
   # ============================================================================
 
   # 7. Web Frontend Server 1

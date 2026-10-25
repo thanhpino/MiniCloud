@@ -2,7 +2,7 @@
 param (
     [string]$HostName = "localhost",
     [string]$Port = "8081",
-    [string]$Realm = "realm_21110001",
+    [string]$Realm = "realm_524h0032_524h0125",
     [string]$ClientId = "flask-app",
     [string]$Username = "sv01",
     [string]$Password = "password123"

@@ -29,11 +29,11 @@ CREATE TABLE IF NOT EXISTS students (
 );
 
 INSERT INTO students (student_id, full_name, email, class_name, gpa) VALUES
+('524H0032', 'Trương Minh Thành', 'thanh.truong@cloud.local', '24h502023', 4.00),
+('524H0125', 'Trương Cao Sang', 'sang.truong@cloud.local', '24h50203', 3.85),
 ('21110001', 'Nguyễn Văn An', 'an.nguyen@cloud.local', '21DTHA1', 3.65),
 ('21110002', 'Trần Thị Bình', 'binh.tran@cloud.local', '21DTHA1', 3.80),
-('21110003', 'Lê Hoàng Cường', 'cuong.le@cloud.local', '21DTHA2', 3.50),
-('524H0125','Trương Cao Sang','sang.truong@cloud.local','24h50203',3.0),
-('524H0032','Trương Minh Thành','thanh.truong@cloud.local','24h502023',4.0);
+('21110003', 'Lê Hoàng Cường', 'cuong.le@cloud.local', '21DTHA2', 3.50);
 -- Grant privileges for minicloud_user
 GRANT ALL PRIVILEGES ON minicloud.* TO 'minicloud_user'@'%';
 GRANT ALL PRIVILEGES ON studentdb.* TO 'minicloud_user'@'%';
