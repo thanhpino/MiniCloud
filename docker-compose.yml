@@ -80,6 +80,8 @@ services:
       - KC_HEALTH_ENABLED=true
       - KC_METRICS_ENABLED=true
       - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_HOSTNAME_STRICT=false
+      - KC_PROXY_HEADERS=xforwarded
     volumes:
       - ./authentication-identity-server/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     ports:
@@ -147,6 +149,7 @@ services:
     container_name: application-backend-server
     restart: unless-stopped
     ports:
+      - "8085:5000"   # Cong chuan theo de: curl http://localhost:8085/hello
       - "5000:5000"
     environment:
       - DB_HOST=relational-database-server
@@ -172,8 +175,10 @@ services:
       - MYSQL_PASSWORD=minicloud_pass
     volumes:
       - ./relational-database-server/init:/docker-entrypoint-initdb.d:ro
+      - mariadb-data:/var/lib/mysql
     ports:
-      - "3308:3306"
+      # Mac dinh 3306 theo de; neu may local trung MySQL thi dat DB_HOST_PORT=3308 trong .env
+      - "${DB_HOST_PORT:-3306}:3306"
     networks:
       cloud-net:
         ipv4_address: 172.28.0.30
@@ -193,6 +198,9 @@ services:
     networks:
       cloud-net:
         ipv4_address: 172.28.0.40
+
+volumes:
+  mariadb-data:
 
 networks:
   cloud-net:
