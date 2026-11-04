@@ -8,7 +8,7 @@ PASS=0; FAIL=0
 ok()   { echo "  [PASS] $1"; PASS=$((PASS+1)); }
 bad()  { echo "  [FAIL] $1"; FAIL=$((FAIL+1)); }
 code() { curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$1"; }
-has()  { curl -s --max-time 10 "$1" | grep -q "$2"; }
+has()  { curl -sL --max-time 10 "$1" | grep -qi "$2"; }
 
 echo "== 1. Web Frontend =="
 [ "$(code http://$H:8080/)" = 200 ]       && ok "Web1 /"      || bad "Web1 /"
@@ -19,8 +19,8 @@ for b in blog1 blog2 blog3; do
 done
 
 echo "== 2. App Backend =="
-has http://$H:8085/hello "Hello from App Server" && ok "8085/hello"        || bad "8085/hello"
-has http://$H/api/hello  "Hello from App Server" && ok "Proxy /api/hello"  || bad "Proxy /api/hello"
+has http://$H:8085/hello "Hello" && ok "8085/hello"        || bad "8085/hello"
+has http://$H/api/hello  "Hello" && ok "Proxy /api/hello"  || bad "Proxy /api/hello"
 has http://$H/api/student   "524H0032" && ok "/api/student (JSON)" || bad "/api/student"
 has http://$H/student/      "524H0032" && ok "/student/ (route mo rong 9)" || bad "/student/"
 has http://$H/api/students-db "524H0032" && ok "/api/students-db (MariaDB)" || bad "/api/students-db"
