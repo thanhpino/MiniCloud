@@ -41,7 +41,7 @@ def root():
 @app.route("/hello", methods=["GET"])
 def hello():
     return jsonify({
-        "message": "Hello from MiniCloud Backend API!",
+        "message": "Hello from App Server!",
         "status": "success",
         "service": "application-backend-server"
     })
