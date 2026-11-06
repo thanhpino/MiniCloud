@@ -2,6 +2,9 @@
 
 > **ĐỒ ÁN CUỐI KỲ MÔN ĐIỆN TOÁN ĐÁM MÂY**  
 > **TRƯỜNG ĐẠI HỌC TÔN ĐỨC THẮNG (TDTU) - KHOA CÔNG NGHỆ THÔNG TIN**  
+> 
+> 🎥 **Video Demo Nghiệm Thu (YouTube):** [https://youtu.be/0sWYRrRT5iE](https://youtu.be/0sWYRrRT5iE)  
+> 📄 **Báo Cáo Cuối Kỳ (PDF):** [524H0032_524H0125_MiniCloud_FinalReport.pdf](docs/524H0032_524H0125_MiniCloud_FinalReport.pdf)  
 
 Hệ thống **MiniCloud** được thiết kế và xây dựng nhằm mô phỏng một nền tảng Cloud Platform thu nhỏ hoàn chỉnh (tương đương AWS, GCP, Azure) với **9 loại máy chủ chuyên biệt**, vận hành trong các Docker container độc lập, kết nối qua mạng cô lập `cloud-net` (Subnet: `172.28.0.0/16`) và triển khai thực tế trên **máy Local** cùng **AWS EC2 (Ubuntu)**.
 
@@ -41,6 +44,14 @@ Các Docker Images tùy chỉnh của dự án đã được build chuẩn kiế
 - 🌐 **Web Frontend Node 1:** [`bevissava/myminicloud-web:v1`](https://hub.docker.com/r/bevissava/myminicloud-web)
 - 🌐 **Web Frontend Node 2:** [`bevissava/myminicloud-web2:v1`](https://hub.docker.com/r/bevissava/myminicloud-web2)
 - ⚙️ **Application Backend API:** [`bevissava/myminicloud-backend:v1`](https://hub.docker.com/r/bevissava/myminicloud-backend)
+
+---
+
+## 🎬 VIDEO DEMO & TÀI LIỆU BÁO CÁO
+
+- 🎥 **Video Demo nghiệm thu thực tế trên AWS EC2 (YouTube):** [https://youtu.be/0sWYRrRT5iE](https://youtu.be/0sWYRrRT5iE)
+- 📄 **Báo Cáo Cuối Kỳ hoàn chỉnh (PDF):** [`docs/524H0032_524H0125_MiniCloud_FinalReport.pdf`](docs/524H0032_524H0125_MiniCloud_FinalReport.pdf)
+- 📝 **Tệp nguồn Báo Cáo (Word .docx):** [`docs/524H0032_524H0125_MiniCloud_FinalReport.docx`](docs/524H0032_524H0125_MiniCloud_FinalReport.docx)
 
 ---
 
